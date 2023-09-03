@@ -16,12 +16,15 @@ import os
 
 
 def group_renaming(directory, wanted_name, num_digits, initial_extension, final_extension, name_range=None):
+    # Проверяем на существование каталога
     if not os.path.exists(directory):
         print('Такого каталога не существует')
         return
-
+    # Пробегаемся по папке
     for filename in os.listdir(directory):
+        # Если файл заканчивается на начальном расширении
         if filename.endswith(initial_extension):
+            # То сплитуем файл и берем только имя файла
             base_name = os.path.splitext(filename)[0]
 
         if name_range:
@@ -32,17 +35,21 @@ def group_renaming(directory, wanted_name, num_digits, initial_extension, final_
                 end = len(base_name)
             base_name = base_name[start:end]
 
-        count = 1
-        while os.path.exists(os.path.join(directory, f"{wanted_name}{count:0{num_digits}d}.{final_extension}")):
-            count += 1
+        if base_name != '__init__':
+            count = 1
+            while os.path.exists(os.path.join(directory, f"{wanted_name}{count:0{num_digits}d}.{final_extension}")):
+                count += 1
 
-        new_filename = f"{wanted_name}{count:0{num_digits}d}.{final_extension}"
+            new_filename = f"{wanted_name}{count:0{num_digits}d}.{final_extension}"
 
-        os.rename(os.path.join(directory, filename), os.path.join(directory, new_filename))
-        print(f"Переименован {filename} в {new_filename}")
+            os.rename(os.path.join(directory, filename), os.path.join(directory, new_filename))
+            print(f"Переименован {filename} в {new_filename}")
+        else:
+            print(f"{filename} не будет переименован из-за __init__")
+
+group_renaming('D:\\PycharmProjects\\rename_files', 'result_name', 2, 'ipynb', 'pptx', (3, 6))
 
 
-# group_renaming('D:\\PycharmProjects\\rename_files', 'result_name', 2, 'py', 'ipynb', (3, 6))
 
 # ---------------------------------------------------------------------------------------------------------------------
 
